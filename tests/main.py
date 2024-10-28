@@ -7,13 +7,7 @@ def add_project_root_to_path():
 
 add_project_root_to_path()
 
-from src.modules.conver import Conver
+from src.api.app import Server
 
-converter = Conver()
-
-input_file = '/home/george/Desktop/test_document.docx'
-output_extension = 'pdf'
-
-output_file = converter.base_converter(input_file, output_extension)
-
-print(f"Converted '{input_file}' to '{output_file}'")
+sv = Server()
+sv.run_development()

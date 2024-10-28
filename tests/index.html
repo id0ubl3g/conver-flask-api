@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload de Arquivo</title>
+</head>
+<body>
+    <h1>Envio de Arquivo</h1>
+    <form action="http://127.0.0.1:5000/converter" method="post" enctype="multipart/form-data">
+        <label for="file">Escolha um arquivo:</label>
+        <input type="file" name="file" id="file" required>
+        <br>
+        <label for="extension">Extensao:</label>
+        <input type="text" name="extension" id="extension" required>
+        <br>
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+</html>
