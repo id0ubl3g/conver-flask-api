@@ -17,7 +17,3 @@ temp/
 # Tests
 
 tests/
-
-# Docker 
-
-*.tar

@@ -49,6 +49,7 @@ class Server:
             file_path = None
             output_file = None
 
+
             try:
                 file = request.files['file']
 
@@ -110,6 +111,3 @@ class Server:
 
     def run_production(self, host='0.0.0.0', port=5000):
         self.app.run(debug=False, host=host, port=port, use_reloader=False)
-
-
-            
