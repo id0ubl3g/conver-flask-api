@@ -127,6 +127,6 @@ const convertRequest = async (formData: FormData) => {
 
 #### Acknowledgments
 
-This project was developed in collaboration with [@Francine02](https://github.com/Francine02), who contributed to the frontend part. Her collaboration was essential in integrating the API with a user-friendly interface, providing an optimized user experience.
+This project was developed in collaboration with [Francine Cruz](https://github.com/Francine02), who contributed to the frontend part. Her collaboration was essential in integrating the API with a user-friendly interface, providing an optimized user experience.
 
 For a live demonstration of the API in action, visit [Conver](https://conver-taupe.vercel.app/), where the API has been fully integrated into an interactive platform.

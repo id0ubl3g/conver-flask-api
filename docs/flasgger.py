@@ -8,7 +8,7 @@ def init_flasgger(app):
             'version': '1.0.0',
             'description': 'Flask API for document conversion.'
         },
-        'basePath': '/converter',
+        'basePath': '',
         'paths': {
             '/converter': {
                 'post': {
@@ -44,7 +44,7 @@ def init_flasgger(app):
                                 'properties': {
                                     'error': {
                                         'type': 'string',
-                                        'example': 'Unsupported file extension: xslx'
+                                        'example': 'Unsupported file extension: xlsx'
                                     }
                                 }
                             }
