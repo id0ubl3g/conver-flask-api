@@ -6,4 +6,5 @@ add_project_root_to_path()
 app = Server().app
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    server = Server()
+    server.run_production()

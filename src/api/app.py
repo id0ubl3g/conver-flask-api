@@ -111,3 +111,6 @@ class Server:
             finally:
                 if self.converter:
                     clean_up(file_path, output_file)
+
+    def run_production(self, host='0.0.0.0', port=5000):
+        self.app.run(debug=False, host=host, port=port, use_reloader=False)
