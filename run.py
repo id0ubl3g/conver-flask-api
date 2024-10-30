@@ -3,6 +3,7 @@ from src.api.app import Server
 
 add_project_root_to_path()
 
+app = Server().app
+
 if __name__ == '__main__':
-    server = Server()
-    server.run_production()
+    app.run(host='0.0.0.0', port=5000)

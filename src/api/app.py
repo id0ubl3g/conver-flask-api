@@ -1,7 +1,8 @@
+from docs.flasgger import init_flasgger
 from src.modules.conver import Conver
 from src.utils.system_utils import *
 
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, render_template
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
 
@@ -12,7 +13,7 @@ import os
 
 class Server:
     def __init__(self):
-        self.app = Flask(__name__)
+        self.app = Flask(__name__, template_folder='../templates')
         CORS(self.app)
         self.converter = Conver()
 
@@ -37,6 +38,8 @@ class Server:
             'rtf': 'application/rtf'
         }
 
+        init_flasgger(self.app)
+
     def create_error_response(self, message, code):
         return jsonify({'error': message}), code
     
@@ -44,11 +47,14 @@ class Server:
         return self.create_error_response('File size exceeds the maximum limit of 50 MB.', 413)
 
     def _register_routes(self):
+        @self.app.route('/', methods=['GET'])
+        def home():
+            return render_template('index.html')
+        
         @self.app.route('/converter', methods=['POST'])
         def convert_file():
             file_path = None
             output_file = None
-
 
             try:
                 file = request.files['file']
@@ -105,9 +111,3 @@ class Server:
             finally:
                 if self.converter:
                     clean_up(file_path, output_file)
-    
-    def run_development(self, host='127.0.0.1', port=5000):
-        self.app.run(debug=True, host=host, port=port, use_reloader=True)
-
-    def run_production(self, host='0.0.0.0', port=5000):
-        self.app.run(debug=False, host=host, port=port, use_reloader=False)
