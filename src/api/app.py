@@ -2,7 +2,7 @@ from docs.flasgger import init_flasgger
 from src.modules.conver import Conver
 from src.utils.system_utils import *
 
-from flask import Flask, request, jsonify, send_file, render_template
+from flask import Flask, request, jsonify, send_file
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
 
@@ -13,7 +13,7 @@ import os
 
 class Server:
     def __init__(self):
-        self.app = Flask(__name__, template_folder='../templates')
+        self.app = Flask(__name__)
         CORS(self.app)
         self.converter = Conver()
 
@@ -47,10 +47,6 @@ class Server:
         return self.create_error_response('File size exceeds the maximum limit of 50 MB.', 413)
 
     def _register_routes(self):
-        @self.app.route('/', methods=['GET'])
-        def home():
-            return render_template('index.html')
-        
         @self.app.route('/converter', methods=['POST'])
         def convert_file():
             file_path = None

@@ -19,13 +19,7 @@ The Conver Flask API includes interactive documentation powered by Flasgger. You
 
 ## API Endpoints
 
-### 1. Home Endpoint
-
-- **URL**: `/`
-- **Method**: `GET`
-- **Description**: Returns the home page of the API.
-
-### 2. Convert File Endpoint
+### 1. Convert File Endpoint
 
 - **URL**: `/converter`
 - **Method**: `POST`
