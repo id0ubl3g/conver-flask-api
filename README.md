@@ -140,9 +140,9 @@ curl -X POST "http://127.0.0.1:5000/converter" \
     - **Headers**:
     ```json
     {
-        ...
-        content-disposition: attachment; filename="Conver - filename.octet-stream" 
-        ...
+        "..."
+        "content-disposition": "attachment; filename=\"Conver - filename.pdf\""
+        "..."
     }
     ```
 
