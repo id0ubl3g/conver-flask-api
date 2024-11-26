@@ -210,3 +210,7 @@ const convertRequest = async (formData: FormData) => {
 This project was developed in collaboration with [Francine Cruz](https://github.com/Francine02), who contributed to the frontend part. Her collaboration was essential in integrating the API with a user-friendly interface, providing an optimized user experience.
 
 For a live demonstration of the API in action, visit [Conver](https://conver-taupe.vercel.app/), where the API has been fully integrated into an interactive platform.
+
+## License
+
+This project is licensed under the terms of the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0). See the [LICENSE](./LICENSE) file for details.
