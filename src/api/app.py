@@ -61,6 +61,18 @@ class Server:
     def too_large(self, error: Exception) -> Response:
         return self.create_error_response('File size exceeds the maximum limit of 50 MB.', 413)
 
+    def reset_optional_values(self):
+        self.output_extension = None
+        self.output_filename = None
+        self.file_extension = None
+        self.full_filename = None
+        self.file = None
+        self.output_file = None
+        self.file_path = None
+        self.unique_id = None
+        self.mime_type = None
+        self.filename = None
+
     def _register_routes(self) -> None:
         @self.app.route('/converter', methods=['POST'])
         def convert_file() -> Response:
@@ -116,6 +128,7 @@ class Server:
             finally:
                 if self.converter:
                     clean_up(self.file_path, self.output_file)
+                    self.reset_optional_values()
 
     def run_production(self, host: str = '0.0.0.0', port: int = 5000) -> None:
         self.app.run(debug=False, host=host, port=port, use_reloader=False)
