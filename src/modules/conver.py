@@ -1,18 +1,21 @@
 from config.base_converter import BaseConverter
 from src.utils.system_utils import *
 
+from typing import Optional
 import subprocess
 import os
 
 class Conver(BaseConverter):
-    def base_converter(self, input_file, output_extension):
-        output_dir = ride_path('src/temp')
-    
-        create_path(output_dir)
+    def __init__(self) -> None:
+        self.output_dir: str = ride_path('src/temp')
+        self.output_file: Optional[str] = None
+
+    def base_converter(self, input_file: str, output_extension: str) -> str:
+        create_path(self.output_dir)
         
         command = ['libreoffice', '--headless', '--convert-to', output_extension, '--outdir', 'src/temp', input_file]
         subprocess.run(command, check=True)
         
-        output_file = os.path.join(output_dir, os.path.basename(input_file).replace(os.path.splitext(input_file)[1], f'.{output_extension}'))
+        self.output_file = os.path.join(self.output_dir, os.path.basename(input_file).replace(os.path.splitext(input_file)[1], f'.{output_extension}'))
         
-        return output_file
+        return self.output_file

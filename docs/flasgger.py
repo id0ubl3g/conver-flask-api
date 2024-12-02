@@ -1,6 +1,7 @@
 from flasgger import Swagger as Flasgger
+from flask import Flask
 
-def init_flasgger(app):
+def init_flasgger(app: Flask) -> None:
     Flasgger(app, template={
         'swagger': '2.0',
         'info': {

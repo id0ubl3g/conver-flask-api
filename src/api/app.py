@@ -2,35 +2,39 @@ from docs.flasgger import init_flasgger
 from src.modules.conver import Conver
 from src.utils.system_utils import *
 
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, Response
+from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
 
+from typing import Dict, List, Optional
 import subprocess
 import mimetypes
 import uuid
 import os
 
 class Server:
-    def __init__(self):
-        self.app = Flask(__name__)
+    def __init__(self) -> None:
+        self.app: Flask = Flask(__name__)
         CORS(self.app)
-        self.converter = Conver()
+        self.converter: Conver = Conver()
 
-        UPLOAD_FOLDER = 'src/temp'
+        MAX_UPLOAD_SIZE: int = 50 * 1024 * 1024
+        UPLOAD_FOLDER: str = 'src/temp'
+        
+        self.app.config['MAX_CONTENT_LENGTH'] = MAX_UPLOAD_SIZE
         self.app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-        self.app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
         self.app.errorhandler(413)(self.too_large)
         self._register_routes()
 
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-        self.allowed_extensions = {
+        self.allowed_extensions: Dict[str, List[str]] = {
             'input': ['doc', 'docx', 'odt', 'txt', 'rtf'],
             'output': ['pdf', 'doc', 'docx', 'odt', 'txt', 'rtf']
         }
 
-        self.expected_mime_types = {
+        self.expected_mime_types: Dict[str, str] = {
             'doc': 'application/msword',
             'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'odt': 'application/vnd.oasis.opendocument.text',
@@ -38,51 +42,56 @@ class Server:
             'rtf': 'application/rtf'
         }
 
+        self.output_extension: Optional[str] = None
+        self.output_filename: Optional[str] = None
+        self.file_extension: Optional[str] = None
+        self.full_filename: Optional[str] = None
+        self.file: Optional[FileStorage] = None
+        self.output_file: Optional[str] = None
+        self.file_path: Optional[str] = None
+        self.unique_id: Optional[str] = None
+        self.mime_type: Optional[str] = None
+        self.filename: Optional[str] = None
+        
         init_flasgger(self.app)
 
-    def create_error_response(self, message, code):
+    def create_error_response(self, message: str, code: int) -> Response:
         return jsonify({'error': message}), code
     
-    def too_large(self, error):
+    def too_large(self, error: Exception) -> Response:
         return self.create_error_response('File size exceeds the maximum limit of 50 MB.', 413)
 
-    def _register_routes(self):
+    def _register_routes(self) -> None:
         @self.app.route('/converter', methods=['POST'])
-        def convert_file():
-            file_path = None
-            output_file = None
-
+        def convert_file() -> Response:
             try:
-                file = request.files['file']
+                self.file = request.files['file']
 
-                if not file:
+                if not self.file:
                     return self.create_error_response('No file uploaded', 400)
 
-                file_name = secure_filename(file.filename)
+                self.full_filename = secure_filename(self.file.filename)
+                self.file_extension = self.full_filename.rsplit('.', 1)[-1].lower() if '.' in self.file.filename else None
 
-                file_extension = file_name.rsplit('.', 1)[-1].lower() if '.' in file.filename else None
+                if not self.file_extension or self.file_extension not in self.allowed_extensions['input']:
+                    return self.create_error_response(f'Unsupported file extension: {self.file_extension}', 400)
 
-                if not file_extension or file_extension not in self.allowed_extensions['input']:
-                    return self.create_error_response(f'Unsupported file extension: {file_extension}', 400)
+                self.output_extension = request.form.get('extension')
 
-                output_extension = request.form.get('extension')
-
-                if output_extension not in self.allowed_extensions['output']:
-                    return self.create_error_response(f'Unsupported output extension: {output_extension}', 400)
+                if self.output_extension not in self.allowed_extensions['output']:
+                    return self.create_error_response(f'Unsupported output extension: {self.output_extension}', 400)
                 
-                mime_type, _ = mimetypes.guess_type(file_name)
+                self.mime_type, _ = mimetypes.guess_type(self.full_filename)
 
-                if mime_type not in self.expected_mime_types.values():
-                    return self.create_error_response(f'Unsupported MIME type: {mime_type}', 400)
+                if self.mime_type not in self.expected_mime_types.values():
+                    return self.create_error_response(f'Unsupported MIME type: {self.mime_type}', 400)
 
-                unique_id = str(uuid.uuid4())
-                file_path = os.path.join(self.app.config['UPLOAD_FOLDER'], f"{unique_id}_{file_name}")
-                file.save(file_path)
-
-                self.converter = Conver()
+                self.unique_id = str(uuid.uuid4())
+                self.file_path = os.path.join(self.app.config['UPLOAD_FOLDER'], f"{self.unique_id}_{self.full_filename}")
+                self.file.save(self.file_path)
 
                 try:
-                    output_file = self.converter.base_converter(file_path, output_extension)
+                    self.output_file = self.converter.base_converter(self.file_path, self.output_extension)
 
                 except subprocess.CalledProcessError:
                     return self.create_error_response('Error running LibreOffice command', 500)
@@ -93,20 +102,20 @@ class Server:
                 except Exception:
                     return self.create_error_response('Conversion failed', 500)
 
-                if not output_file or not os.path.exists(output_file):
+                if not self.output_file or not os.path.exists(self.output_file):
                     return self.create_error_response('Conversion failed, output file not found', 500)
 
-                filename = file_name.split('.')[0]
-                output_filename = f"Conver - {filename}.{output_extension}"
+                self.filename = self.full_filename.split('.')[0]
+                self.output_filename = f"Conver - {self.filename}.{self.output_extension}"
 
-                return send_file(output_file, as_attachment=True, download_name=output_filename), 200
+                return send_file(self.output_file, as_attachment=True, download_name=self.output_filename), 200
             
             except KeyError:
                 return self.create_error_response('File not found', 400)
 
             finally:
                 if self.converter:
-                    clean_up(file_path, output_file)
+                    clean_up(self.file_path, self.output_file)
 
-    def run_production(self, host='0.0.0.0', port=5000):
+    def run_production(self, host: str = '0.0.0.0', port: int = 5000) -> None:
         self.app.run(debug=False, host=host, port=port, use_reloader=False)
