@@ -7,7 +7,6 @@ from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
 
-from typing import Dict, List, Optional
 import subprocess
 import mimetypes
 import uuid
@@ -29,12 +28,12 @@ class Server:
 
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-        self.allowed_extensions: Dict[str, List[str]] = {
+        self.allowed_extensions: dict[str, list[str]] = {
             'input': ['doc', 'docx', 'odt', 'txt', 'rtf'],
             'output': ['pdf', 'doc', 'docx', 'odt', 'txt', 'rtf']
         }
 
-        self.expected_mime_types: Dict[str, str] = {
+        self.expected_mime_types: dict[str, str] = {
             'doc': 'application/msword',
             'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'odt': 'application/vnd.oasis.opendocument.text',
@@ -42,16 +41,16 @@ class Server:
             'rtf': 'application/rtf'
         }
 
-        self.output_extension: Optional[str] = None
-        self.output_filename: Optional[str] = None
-        self.file_extension: Optional[str] = None
-        self.full_filename: Optional[str] = None
-        self.file: Optional[FileStorage] = None
-        self.output_file: Optional[str] = None
-        self.file_path: Optional[str] = None
-        self.unique_id: Optional[str] = None
-        self.mime_type: Optional[str] = None
-        self.filename: Optional[str] = None
+        self.output_extension: str = None
+        self.output_filename: str = None
+        self.file_extension: str = None
+        self.full_filename: str = None
+        self.file: FileStorage = None
+        self.output_file: str = None
+        self.file_path: str = None
+        self.unique_id: str = None
+        self.mime_type: str = None
+        self.filename: str = None
         
         init_flasgger(self.app)
 

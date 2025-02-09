@@ -1,14 +1,13 @@
 from config.base_converter import BaseConverter
 from src.utils.system_utils import *
 
-from typing import Optional
 import subprocess
 import os
 
 class Conver(BaseConverter):
     def __init__(self) -> None:
         self.output_dir: str = ride_path('src/temp')
-        self.output_file: Optional[str] = None
+        self.output_file: str = None
 
     def base_converter(self, input_file: str, output_extension: str) -> str:
         create_path(self.output_dir)
