@@ -1,5 +1,6 @@
+from src.utils.system_utils import ride_path, create_path
+
 from config.base_converter import BaseConverter
-from src.utils.system_utils import *
 
 import subprocess
 import os

@@ -1,6 +1,7 @@
+from src.utils.system_utils import clean_up
 from docs.flasgger import init_flasgger
+
 from src.modules.conver import Conver
-from src.utils.system_utils import *
 
 from flask import Flask, request, jsonify, send_file, Response
 from werkzeug.datastructures import FileStorage

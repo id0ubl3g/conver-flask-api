@@ -1,4 +1,4 @@
-from config.path_config import *
+from config.path_config import add_project_root_to_path
 from src.api.app import Server
 
 add_project_root_to_path()
