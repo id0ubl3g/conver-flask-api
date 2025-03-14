@@ -1,7 +1,7 @@
 <div align="center">
     <img src=".github/document-logo.png" alt="Document Logo" width="130">
     <h1><b>Conver Flask API</b></h1>
-    <p>Flask API for document conversion </p>
+    <p>Flask API for document conversion.</p>
     <p>
         <img src="https://img.shields.io/github/last-commit/id0ubl3g/conver-flask-api?style=flat&logo=git&logoColor=white&color=0080ff" alt="Last Commit">
         <img src="https://img.shields.io/github/languages/top/id0ubl3g/conver-flask-api?style=flat&color=0080ff" alt="Top Language">
@@ -14,7 +14,7 @@
 - [Overview](#overview)
 - [Project Structure](#project-structure)
 - [Prerequisites](#prerequisites)  
-    - [Steps to Set Up `Docker`](#steps-to-set-up-docker)  
+    - [Setting Up `Docker`](#setting-up-docker)  
 - [Build and Run Container](#build-and-run-container)
 - [API Documentation](#api-documentation)
     - [API Endpoints](#api-endpoints)
@@ -61,7 +61,7 @@ The Conver Flask API is a web application developed with Flask, designed to faci
 
 To use Docker for containerizing the Conver Flask API, follow these steps to install Docker on your system.
 
-### Steps to Set Up `Docker`
+### Setting Up `Docker`
 
 Update your system and install Docker with the following commands:
 
